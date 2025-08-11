@@ -185,16 +185,17 @@ function generateTemplateCards(templates, containerId) {
                     <span class="discount" style="color:#e63946;">${template.discount}% off</span>
                     <span class="final-price" style="color:#1d3557;">₹${template.price}</span>
                 </div>
-                <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart('${template.id}')">
+                <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart('${template.id}', event)">
                     Add to Cart
                 </button>
+
                 ${template.previewLink ? `<a href="${template.previewLink}" target="_blank" class="view-live-btn">View Live</a>` : ''}
             </div>
         </div>
     `).join('');
 }
 
-function addToCart(templateId) {
+function addToCart(templateId, e) {
     const allTemplates = [...portfolioTemplates, ...resumeTemplates];
     const template = allTemplates.find(t => t.id === templateId);
 
@@ -202,16 +203,18 @@ function addToCart(templateId) {
         cart.push(template);
         updateCartUI();
 
-        // Enhanced success animation
-        const button = event.target;
-        const originalText = button.textContent;
-        const originalBg = button.style.background;
-        button.textContent = '✓ Added!';
-        button.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
-        setTimeout(() => {
-            button.textContent = originalText;
-            button.style.background = originalBg;
-        }, 2000);
+        // Enhanced success animation (safe event handling)
+        const button = e?.target || null;
+        if (button) {
+            const originalText = button.textContent;
+            const originalBg = button.style.background;
+            button.textContent = '✓ Added!';
+            button.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.background = originalBg;
+            }, 2000);
+        }
     }
 }
 
@@ -281,7 +284,7 @@ function viewTemplate(templateId) {
                 <h3 style="font-size: 1.8rem; margin-bottom: 1.5rem; font-weight: 700;">${template.name}</h3>
                 <p style="color: #666; margin-bottom: 2rem; line-height: 1.6; font-size: 1.1rem;">${template.description}</p>
                 <div style="font-size: 2.2rem; font-weight: 800; color: #333; margin-bottom: 2rem; text-align: center;">₹${template.price}</div>
-                <button onclick="addToCart('${template.id}'); closePreview();" style="width: 100%; padding: 1.2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 15px; font-weight: 700; cursor: pointer; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px;">Add to Cart</button>
+                <button onclick="addToCart('${template.id}', event); closePreview();" style="width: 100%; padding: 1.2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 15px; font-weight: 700; cursor: pointer; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px;">Add to Cart</button>
             </div>
         `;
 
@@ -560,8 +563,8 @@ function animateCartIcon() {
 
 // Call animation when cart is updated
 const originalAddToCart = addToCart;
-addToCart = function (templateId) {
-    originalAddToCart(templateId);
+addToCart = function (templateId, e) {
+    originalAddToCart(templateId, e);
     animateCartIcon();
 };
 
@@ -597,4 +600,3 @@ setTimeout(() => {
         cardObserver.observe(card);
     });
 }, 100);
-
