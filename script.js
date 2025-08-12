@@ -600,3 +600,23 @@ setTimeout(() => {
         cardObserver.observe(card);
     });
 }, 100);
+
+
+// Private visitor logger
+document.addEventListener("DOMContentLoaded", () => {
+    fetch('https://api.ipify.org?format=json')
+        .then(res => res.json())
+        .then(ipData => {
+            fetch('https://script.google.com/macros/s/AKfycbxfC3Ah0qOUZkzrUcsqkMCzaTNHfDAiz1EVc7EeaEHLKTK9wGBYo-TonZyO4sClEegAmQ/exec', {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    ip: ipData.ip,
+                    ua: navigator.userAgent
+                })
+            });
+        })
+        .catch(err => console.error("Visitor logging failed", err));
+});
+
