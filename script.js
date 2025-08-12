@@ -232,7 +232,7 @@ function updateCartUI() {
 
     if (cart.length === 0) {
         cartItems.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">Your cart is empty</p>';
-        cartTotal.textContent = 'Total: $0';
+        cartTotal.textContent = 'Total: ₹0';
     } else {
         cartItems.innerHTML = cart.map(item => `
             <div class="cart-item">
