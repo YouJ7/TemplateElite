@@ -1236,9 +1236,6 @@
         text-align: center;
         padding: 2rem 1rem;
     }
-}
-/* Responsive fix for Get in Touch contact grid */
-@media (max-width: 768px) {
     .contact-grid {
         display: flex;
         flex-direction: column;
